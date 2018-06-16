@@ -1,0 +1,15 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: fastdfs-client
+
+fdfs:
+  so-timeout: 1501
+  connect-timeout: 601
+  tracker-list:
+    - 192.168.1.105:22122
+  pool:
+      max-total: 153
+      max-wait-millis: 102
