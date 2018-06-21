@@ -16,6 +16,10 @@
 
     <properties>
         <java.version>1.8</java.version>
+        <fastdfs-client-java.version>1.27.0.0</fastdfs-client-java.version>
+        <springfox.verison>2.2.2</springfox.verison>
+        <base64.version>2.3.8</base64.version>
+        <pool.verison>2.4.2</pool.verison>
     </properties>
 
     <dependencies>
@@ -33,22 +37,41 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-undertow</artifactId>
         </dependency>
+        <!-- Connection-pools suport -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-pool2</artifactId>
+            <version>${pool.verison}</version>
+        </dependency>
+        <!-- Swagger support -->
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger-ui</artifactId>
-            <version>2.2.2</version>
+            <version>${springfox.verison}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger2</artifactId>
-            <version>2.2.2</version>
+            <version>${springfox.verison}</version>
             <scope>compile</scope>
         </dependency>
+        <!-- FastDFS Client -->
         <dependency>
-            <groupId>com.github.tobato</groupId>
-            <artifactId>fastdfs-client</artifactId>
-            <version>1.26.2</version>
+            <groupId>net.oschina.zcx7878</groupId>
+            <artifactId>fastdfs-client-java</artifactId>
+            <version>${fastdfs-client-java.version}</version>
+        </dependency>
+        <!-- 支持 @ConfigurationProperties 注解 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+        </dependency>
+        <!-- BASE64 Support -->
+        <dependency>
+            <groupId>net.iharder</groupId>
+            <artifactId>base64</artifactId>
+            <version>${base64.version}</version>
         </dependency>
     </dependencies>
 

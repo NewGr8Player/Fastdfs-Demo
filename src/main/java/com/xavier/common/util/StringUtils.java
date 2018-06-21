@@ -1,4 +1,4 @@
-package com.xavier.common;
+package com.xavier.common.util;
 
 /**
  * <p>字符串工具类</p>
@@ -6,7 +6,7 @@ package com.xavier.common;
  * @author NewGr8Player
  * @since 2017/10/13
  */
-public class StringUtil {
+public class StringUtils {
 
 	/**
 	 * <p>字符串为 null 或者内部字符全部为 ' ' '\t' '\n' '\r' 这四类字符时返回 true</p>
@@ -39,7 +39,7 @@ public class StringUtil {
 	 * <p>字符串不为空</p>
 	 *
 	 * @return boolean
-	 * @see StringUtil isBlank
+	 * @see StringUtils isBlank
 	 */
 	public static boolean isNotBlank(String str) {
 		return !isBlank(str);
