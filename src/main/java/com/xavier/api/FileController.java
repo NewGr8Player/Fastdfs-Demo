@@ -5,14 +5,11 @@ import com.xavier.common.util.FileCheck;
 import com.xavier.config.ErrorCode;
 import com.xavier.config.FastDFSException;
 import com.xavier.config.FileResponseData;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,7 +18,7 @@ import java.io.IOException;
 import java.util.Locale;
 
 @RestController
-@RequestMapping(value="/file")
+@RequestMapping(value = "/")
 public class FileController {
 
 	@Autowired
@@ -33,38 +30,28 @@ public class FileController {
 	@Value("${fastdfs.http_secret_key}")
 	private String fastDFSHttpSecretKey;/* FastDFS秘钥 */
 
-	@RequestMapping("/test")
-	@ResponseBody
-	public FileResponseData test(){
+	@ApiOperation(value = "测试接口")
+	@GetMapping(value = "/test")
+	public FileResponseData test() {
 		return new FileResponseData(true);
 	}
 
-	/**
-	 * 上传文件通用，只上传文件到服务器，不会保存记录到数据库
-	 *
-	 * @param file
-	 * @param request
-	 * @return 返回文件路径等信息
-	 */
-	@RequestMapping(value = "/upload/file/sample")
-	@ResponseBody
-	public FileResponseData uploadFileSample(MultipartFile file, HttpServletRequest request){
+	@ApiOperation(value = "上传文件通用，只上传文件到服务器，不会保存记录到数据库")
+	@PostMapping(value = "/upload/file/sample")
+	public FileResponseData uploadFileSample(
+			@ApiParam(name = "file", value = "文件", required = true)
+			@RequestParam MultipartFile file,
+			HttpServletRequest request) {
 		return uploadSample(file, request);
 	}
 
-	/**
-	 * 只能上传图片，只上传文件到服务器，不会保存记录到数据库. <br>
-	 * 会检查文件格式是否正确，默认只能上传 ['png', 'gif', 'jpeg', 'jpg'] 几种类型.
-	 *
-	 * @param file
-	 * @param request
-	 * @return 返回文件路径等信息
-	 */
-	@RequestMapping("/upload/image/sample")
-	@ResponseBody
-	public FileResponseData uploadImageSample(@RequestParam MultipartFile file, HttpServletRequest request){
-		// 检查文件类型
-		if(!FileCheck.checkImage(file.getOriginalFilename())){
+	@ApiOperation(value = "只能上传图片，只上传文件到服务器，不会保存记录到数据库. <br>会检查文件格式是否正确，默认只能上传 ['png', 'gif', 'jpeg', 'jpg'] 几种类型.")
+	@PostMapping(value = "/upload/image/sample")
+	public FileResponseData uploadImageSample(
+			@ApiParam(name = "file", value = "图片文件", required = true)
+			@RequestParam MultipartFile file,
+			HttpServletRequest request) {
+		if (!FileCheck.checkImage(file.getOriginalFilename())) {
 			FileResponseData responseData = new FileResponseData(false);
 			responseData.setCode(ErrorCode.FILE_TYPE_ERROR_IMAGE.CODE);
 			responseData.setMessage(ErrorCode.FILE_TYPE_ERROR_IMAGE.MESSAGE);
@@ -74,19 +61,13 @@ public class FileController {
 		return uploadSample(file, request);
 	}
 
-	/**
-	 * 只能上传文档，只上传文件到服务器，不会保存记录到数据库. <br>
-	 * 会检查文件格式是否正确，默认只能上传 ['pdf', 'ppt', 'xls', 'xlsx', 'pptx', 'doc', 'docx'] 几种类型.
-	 *
-	 * @param file
-	 * @param request
-	 * @return 返回文件路径等信息
-	 */
-	@RequestMapping("/upload/doc/sample")
-	@ResponseBody
-	public FileResponseData uploadDocSample(@RequestParam MultipartFile file, HttpServletRequest request){
-		// 检查文件类型
-		if(!FileCheck.checkDoc(file.getOriginalFilename())){
+	@ApiOperation(value = "只能上传文档，只上传文件到服务器，不会保存记录到数据库. <br> 会检查文件格式是否正确，默认只能上传 ['pdf', 'ppt', 'xls', 'xlsx', 'pptx', 'doc', 'docx'] 几种类型.")
+	@PostMapping(value = "/upload/doc/sample")
+	public FileResponseData uploadDocSample(
+			@ApiParam(name = "file", value = "文档文件", required = true)
+			@RequestParam MultipartFile file,
+			HttpServletRequest request) {
+		if (!FileCheck.checkDoc(file.getOriginalFilename())) {
 			FileResponseData responseData = new FileResponseData(false);
 			responseData.setCode(ErrorCode.FILE_TYPE_ERROR_DOC.CODE);
 			responseData.setMessage(ErrorCode.FILE_TYPE_ERROR_DOC.MESSAGE);
@@ -96,32 +77,26 @@ public class FileController {
 		return uploadSample(file, request);
 	}
 
-	/**
-	 * 以附件形式下载文件
-	 *
-	 * @param filePath 文件地址
-	 * @param response
-	 */
-	@RequestMapping("/download/file")
-	public void downloadFile(String filePath, HttpServletResponse response) throws FastDFSException {
+	@ApiOperation(value = "以附件形式下载文件")
+	@GetMapping(value = "/download/file")
+	public void downloadFile(
+			@ApiParam(name = "filePath", value = "文件路径", required = true) String filePath,
+			HttpServletResponse response) throws FastDFSException {
 		try {
-			fastDFSClient.downloadFile(filePath, response);
+			this.fastDFSClient.downloadFile(filePath, response);
 		} catch (FastDFSException e) {
 			e.printStackTrace();
 			throw e;
 		}
 	}
 
-	/**
-	 * 获取图片 使用输出流输出字节码，可以使用< img>标签显示图片<br>
-	 *
-	 * @param filePath 图片地址
-	 * @param response
-	 */
-	@RequestMapping("/download/image")
-	public void downloadImage(String filePath, HttpServletResponse response) throws FastDFSException {
+	@ApiOperation(value = "获取图片 使用输出流输出字节码，可以使用< img>标签显示图片")
+	@GetMapping(value = "/download/image")
+	public void downloadImage(
+			@ApiParam(name = "filePath", value = "文件路径", required = true) String filePath,
+			HttpServletResponse response) throws FastDFSException {
 		try {
-			fastDFSClient.downloadFile(filePath, response.getOutputStream());
+			this.fastDFSClient.downloadFile(filePath, response.getOutputStream());
 		} catch (FastDFSException e) {
 			e.printStackTrace();
 			throw e;
@@ -130,13 +105,11 @@ public class FileController {
 		}
 	}
 
-	/**
-	 * 根据指定的路径删除服务器文件，适用于没有保存数据库记录的文件
-	 *
-	 * @param filePath
-	 */
-	@RequestMapping("/delete/file")
-	public FileResponseData deleteFile(String filePath, Locale locale) {
+	@ApiOperation(value = "根据指定的路径删除服务器文件，适用于没有保存数据库记录的文件")
+	@DeleteMapping(value = "/delete/file")
+	public FileResponseData deleteFile(
+			@ApiParam(name = "filePath", value = "文件路径", required = true) String filePath,
+			Locale locale) {
 		FileResponseData responseData = new FileResponseData();
 		try {
 			fastDFSClient.deleteFile(filePath);
@@ -149,32 +122,28 @@ public class FileController {
 		return responseData;
 	}
 
-	/**
-	 * 获取访问文件的token
-	 *
-	 * @param filePath 文件路径
-	 * @return
-	 */
-	@RequestMapping("/get/token")
-	@ResponseBody
-	public FileResponseData getToken(String filePath){
+	@ApiOperation(value = "获取访问文件的token", notes = "该方法暂时只是示例")
+	@GetMapping("/get/token")
+	public FileResponseData getToken(String filePath) {
 		FileResponseData responseData = new FileResponseData();
 		// 设置访文件的Http地址. 有时效性.
 		String token = FastDFSClient.getToken(filePath, fastDFSHttpSecretKey);
 		responseData.setToken(token);
-		responseData.setHttpUrl(fileServerAddr+"/"+filePath+"?"+token);
-
+		responseData.setHttpUrl(fileServerAddr + "/" + filePath + "?" + token);
 		return responseData;
 	}
 
 	/**
-	 * 上传通用方法，只上传到服务器，不保存记录到数据库
+	 * <p>
+	 * 上传通用方法，其它方法调用该方法。<br />
+	 * 暂不使用，仅作为公共方法放置于此
+	 * </p>
 	 *
-	 * @param file
-	 * @param request
+	 * @param file    MultipartFile
+	 * @param request HttpServletRequest
 	 * @return
 	 */
-	public FileResponseData uploadSample(MultipartFile file, HttpServletRequest request){
+	private FileResponseData uploadSample(MultipartFile file, HttpServletRequest request) {
 		FileResponseData responseData = new FileResponseData();
 		try {
 			// 上传到服务器
@@ -186,7 +155,7 @@ public class FileController {
 			// 设置访文件的Http地址. 有时效性.
 			String token = FastDFSClient.getToken(filepath, fastDFSHttpSecretKey);
 			responseData.setToken(token);
-			responseData.setHttpUrl(fileServerAddr+"/"+filepath+"?"+token);
+			responseData.setHttpUrl(fileServerAddr + "/" + filepath + "?" + token);
 		} catch (FastDFSException e) {
 			responseData.setSuccess(false);
 			responseData.setCode(e.getCode());
@@ -195,5 +164,4 @@ public class FileController {
 
 		return responseData;
 	}
-
 }

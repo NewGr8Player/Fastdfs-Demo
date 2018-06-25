@@ -56,6 +56,7 @@
             <version>${springfox.verison}</version>
             <scope>compile</scope>
         </dependency>
+
         <!-- FastDFS Client -->
         <dependency>
             <groupId>net.oschina.zcx7878</groupId>

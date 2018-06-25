@@ -11,7 +11,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 /**
  * @author NewGr8Player
  */
-@ComponentScan("com")
+@ComponentScan({"com","io"})
 @EnableScheduling
 @EnableAspectJAutoProxy(proxyTargetClass = true)
 @SpringBootApplication

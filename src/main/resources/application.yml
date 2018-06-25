@@ -1,10 +1,12 @@
 server:
-  port: 8080
+  address: 0.0.0.0
+  port: 8081
 
 spring:
   application:
     name: fastdfs-client
 fastdfs:
   file_server_addr: 192.168.183.38:8080
+  http_secret_key: HandFastDFSToken
 pool:
   max_storage_connection: 8

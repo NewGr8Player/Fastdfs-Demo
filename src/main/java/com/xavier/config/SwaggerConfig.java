@@ -1,7 +1,9 @@
 package com.xavier.config;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
@@ -18,20 +20,22 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 public class SwaggerConfig {
 
     @Bean
-    public Docket newsApi() {
+    public Docket customDocket() {
         return new Docket(DocumentationType.SWAGGER_2)
-                .apiInfo(apiInfo())
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("com.xavier.api"))
-                .paths(PathSelectors.any())
-                .build();
+                .build()
+                .apiInfo(apiInfo());
     }
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 .title("FastDFS Client API")
-                .contact("273221594@qq.com")
-                .version("1.0.0")
+                .description("FastDFS Rest API")
+                .contact("NewGr8Player")
+                .version("0.1.RC")
+                .license("MIT License")
+                .licenseUrl("https://github.com/NewGr8Player/Fastdfs-Demo/blob/master/LICENSE")
                 .build();
     }
 
