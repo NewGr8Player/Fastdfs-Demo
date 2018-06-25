@@ -6,18 +6,5 @@ spring:
     name: fastdfs-client
 fastdfs:
   file_server_addr: 192.168.183.38:8080
-  # 最大连接数 并发量较大的话可加大该连接数
+pool:
   max_storage_connection: 8
-  ## fastdfs为前缀的是FastDFS的配置
-  connect_timeout_in_seconds: 10
-  network_timeout_in_seconds: 30
-  charset: UTF-8
-  # token 防盗链功能
-  http_anti_steal_token: false
-  # 密钥
-  http_secret_key: HandFastDFSToken
-  # TrackerServer port
-  http_tracker_http_port: 80
-  #Tracker Server
-  tracker_servers:
-    - 192.168.183.38:22122
