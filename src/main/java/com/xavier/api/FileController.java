@@ -15,7 +15,6 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Locale;
 
 @RestController
 @RequestMapping(value = "/")
@@ -80,7 +79,8 @@ public class FileController {
 	@ApiOperation(value = "以附件形式下载文件")
 	@GetMapping(value = "/download/file")
 	public void downloadFile(
-			@ApiParam(name = "filePath", value = "文件路径", required = true) String filePath,
+			@ApiParam(name = "filePath", value = "文件路径", required = true)
+			@RequestParam(name = "filePath") String filePath,
 			HttpServletResponse response) throws FastDFSException {
 		try {
 			this.fastDFSClient.downloadFile(filePath, response);
@@ -93,7 +93,8 @@ public class FileController {
 	@ApiOperation(value = "获取图片 使用输出流输出字节码，可以使用< img>标签显示图片")
 	@GetMapping(value = "/download/image")
 	public void downloadImage(
-			@ApiParam(name = "filePath", value = "文件路径", required = true) String filePath,
+			@ApiParam(name = "filePath", value = "文件路径", required = true)
+			@RequestParam(name = "filePath") String filePath,
 			HttpServletResponse response) throws FastDFSException {
 		try {
 			this.fastDFSClient.downloadFile(filePath, response.getOutputStream());
@@ -108,8 +109,8 @@ public class FileController {
 	@ApiOperation(value = "根据指定的路径删除服务器文件，适用于没有保存数据库记录的文件")
 	@DeleteMapping(value = "/delete/file")
 	public FileResponseData deleteFile(
-			@ApiParam(name = "filePath", value = "文件路径", required = true) String filePath,
-			Locale locale) {
+			@ApiParam(name = "filePath", value = "文件路径", required = true)
+			@RequestParam(name = "filePath") String filePath) {
 		FileResponseData responseData = new FileResponseData();
 		try {
 			fastDFSClient.deleteFile(filePath);

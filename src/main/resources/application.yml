@@ -8,5 +8,7 @@ spring:
 fastdfs:
   file_server_addr: 192.168.183.38:8080
   http_secret_key: HandFastDFSToken
+  max_file_size: 1024MB
+  max_request_size: 1024MB
 pool:
   max_storage_connection: 8
